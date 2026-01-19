@@ -1,0 +1,19 @@
+# Environnement virtuel (très lourd, ne jamais envoyer)
+.venv/
+env/
+venv/
+
+# Fichiers de cache Python
+__pycache__/
+*.pyc
+
+# Données locales (tes fichiers JSON de test)
+*.json
+data/
+
+# Variables d'environnement sensibles
+.env
+
+# Fichiers système
+.DS_Store
+Thumbs.db
