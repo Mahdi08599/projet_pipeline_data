@@ -1,55 +1,50 @@
-🚀 Real-Time Stock Data Pipeline : Ingestion & Cloud Analytics
-Projet académique - Master 2 Data Science in Business (PST&B)
+# 🚀 Production-Grade Data Pipeline: Real-Time Ingestion & Cloud Analytics
 
-Ce projet implémente un pipeline de données End-to-End robuste permettant de collecter, stocker et analyser les données boursières d'Apple (AAPL) en temps réel. L'architecture repose sur une hybridation entre une infrastructure locale conteneurisée et un entrepôt de données Cloud professionnel.
+This repository features a robust, end-to-end data infrastructure designed for high-availability stock market streaming (AAPL). The system transitions from real-time ingestion to a modular "Clean Architecture," ensuring scalability and professional-grade monitoring.
 
- Architecture du Pipeline
-L'architecture suit les principes du Modern Data Stack avec une séparation claire des responsabilités :
+---
 
-Ingestion Temps Réel : Utilisation de Kafka (Producer/Consumer) pour streamer les données issues de l'API yfinance.
+## 🛠️ Tech Stack & Infrastructure
 
-Data Lake (Couche Bronze) : Stockage des données brutes au format JSON dans MinIO (S3-compatible) pour garantir la persistance des messages.
+| Layer | Technology | Role |
+| :--- | :--- | :--- |
+| **Streaming** | Apache Kafka | Real-time message brokerage |
+| **Data Lake** | MinIO (S3 API) | Bronze layer for raw JSON persistence |
+| **Orchestration** | Apache Airflow | Workflow automation & Cloud sync |
+| **Warehouse** | Snowflake | Silver layer for structured analytics |
+| **Environment** | Docker | Containerized microservices |
 
-Orchestration : Utilisation d'Apache Airflow pour automatiser et monitorer le transfert des données vers le Cloud.
+---
 
-Data Warehouse (Couche Silver) : Centralisation et structuration des données dans Snowflake pour l'analyse décisionnelle.
+## 🏗️ Modular System Architecture
 
-  Technologies Utilisées
-Langage : Python (Pandas, yfinance, Boto3, Snowflake-connector).
+The project follows a **Separation of Concerns (SoC)** principle, isolating technical drivers from business logic.
 
-Streaming : Apache Kafka (Zookeeper, Broker).
+```text
+src/
+ ├── common/       # Shared Kafka drivers & Centralized Logger
+ ├── producers/    # High-frequency ingestion services
+ └── consumers/    # Specialized storage & processing workers
+dags/              # Production ETL workflows
+docker-compose.yml # Infrastructure as Code (IaC)
+screenshots/       # System validation proofs
 
-Stockage d'objets : MinIO.
 
-Orchestration : Apache Airflow (Docker-based).
+⚡ Key Engineering Features
+Modular Ingestion: Decoupled Producers and Consumers allowing independent scaling of services.
 
-Cloud Data Warehouse : Snowflake. 
+Centralized Logging: Standardized monitoring across all Python services for rapid debugging.
 
-Infrastructure : Docker & Docker Compose.
+Automated Cloud Sync: Airflow DAGs manage the secure bridge between local storage and Snowflake.
 
-  Installation et Utilisation
-1. Déploiement de l'infrastructure
-Lancer l'ensemble des services via Docker :
+Data Integrity: Implements a Bronze-to-Silver transformation flow for analytics readiness.
 
-Bash
-docker-compose up -d
+📊 System Validation
+Pipeline Health
+Real-time monitoring via the Airflow scheduler ensures 100% task completion for Cloud synchronization.
 
-2. Lancement du flux de données
-Démarrer le producteur pour capturer les prix boursiers et le consommateur pour les archiver dans MinIO :
+Warehouse Analytics
+Final data landing in the Snowflake Silver layer, verified and indexed for downstream BI tools.
 
-Bash
-python producer.py
-python consumer.py
-
-3. Orchestration Airflow
-Activer le DAG transfert_direct_minio_snowflake depuis l'interface web (localhost:8080) pour déclencher l'ingestion vers Snowflake.
-
-  Résultats et Analyse
-Le pipeline est capable d'ingérer et de structurer les données automatiquement. Une vérification finale dans Snowflake confirme la présence des données prêtes pour l'analyse SQL :
-
-SQL
-SELECT COUNT(*) FROM BOURSE_DB.SILVER.AAPL_DATA;
--- Résultat : Flux opérationnel avec succès.
-
-  👤 Auteur
-Mahdi Ben Arfi – Master 2 Data Science in Business @ Paris School of Technology & Business (PST&B).
+👤 Maintainer
+Mahdi Ben Arfi – Business Analyst & Data Scientist
