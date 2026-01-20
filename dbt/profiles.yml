@@ -1,0 +1,13 @@
+snowflake: 
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: lxqrhwo-ov83463 
+      user: Mahdibenarfi99
+      password: E7ULxfyh7saxaRZ
+      database: BOURSE_DB
+      schema: GOLD
+      warehouse: COMPUTE_WH
+      role: ACCOUNTADMIN 
+      threads: 4

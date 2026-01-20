@@ -29,6 +29,18 @@ services:
       MINIO_ROOT_PASSWORD: password
     command: server /data --console-address ":9001"
 
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-snowflake:latest
+    container_name: dbt_transform
+    volumes:
+      - ./dbt:/usr/app/dbt
+      - ~/.dbt:/root/.dbt  
+    environment:
+      - SNOWFLAKE_ACCOUNT=${SNOWFLAKE_ACCOUNT}
+      - SNOWFLAKE_USER=${SNOWFLAKE_USER}
+      - SNOWFLAKE_PASSWORD=${SNOWFLAKE_PASSWORD}
+    profiles: ["transform"] # Pour ne le lancer que si besoin
+
   # --- AIRFLOW ---
   postgres:
     image: postgres:13
@@ -60,9 +72,12 @@ services:
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
       - AIRFLOW__WEBSERVER__SECRET_KEY=ma_cle_secrete_tres_sure
-      - PIP_ADDITIONAL_REQUIREMENTS=boto3 apache-airflow-providers-snowflake
+      - PIP_ADDITIONAL_REQUIREMENTS=boto3 apache-airflow-providers-snowflake apache-airflow-providers-docker dbt-core dbt-snowflake
     volumes:
       - ./dags:/opt/airflow/dags
+      - ./dbt:/opt/airflow/dbt
+      - ~/.dbt:/home/airflow/.dbt
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     command: webserver
 
@@ -74,9 +89,12 @@ services:
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
       - AIRFLOW__WEBSERVER__SECRET_KEY=ma_cle_secrete_tres_sure
-      - PIP_ADDITIONAL_REQUIREMENTS=boto3 apache-airflow-providers-snowflake
+      - _PIP_ADDITIONAL_REQUIREMENTS=boto3 apache-airflow-providers-snowflake dbt-core dbt-snowflake
     volumes:
       - ./dags:/opt/airflow/dags
+      - ./dbt:/opt/airflow/dbt
+      - ~/.dbt:/home/airflow/.dbt
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     command: scheduler
 

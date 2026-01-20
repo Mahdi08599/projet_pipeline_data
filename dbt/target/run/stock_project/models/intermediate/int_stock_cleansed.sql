@@ -1,0 +1,12 @@
+
+  create or replace   view BOURSE_DB.GOLD.int_stock_cleansed
+  
+   as (
+    WITH cleaned AS (
+    SELECT *,
+           ROW_NUMBER() OVER (PARTITION BY stock_symbol, recorded_at ORDER BY recorded_at DESC) as rank
+    FROM BOURSE_DB.GOLD.stg_stock_data
+)
+SELECT * FROM cleaned WHERE rank = 1
+  );
+

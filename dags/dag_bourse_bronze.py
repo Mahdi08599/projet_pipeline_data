@@ -1,5 +1,7 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
+from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 from datetime import datetime
@@ -38,7 +40,15 @@ with DAG(
     catchup=False
 ) as dag:
 
-    task_transfert = PythonOperator(
+    load_to_snowflake = PythonOperator(
         task_id='pousser_vers_snowflake',
         python_callable=transferer_minio_a_snowflake
     )
+
+    dbt_run_transformations = BashOperator(
+    task_id='dbt_run_transformations',
+    bash_command='cd /opt/airflow/dbt && /home/airflow/.local/bin/dbt run --profiles-dir .',
+    dag=dag,
+)
+
+    load_to_snowflake >> dbt_run_transformations

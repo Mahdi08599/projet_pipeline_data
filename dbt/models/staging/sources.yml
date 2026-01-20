@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: raw_data  
+    database: BOURSE_DB
+    schema: SILVER 
+    tables:
+      - name: AAPL_DATA
