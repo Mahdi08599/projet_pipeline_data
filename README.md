@@ -23,7 +23,7 @@ The entire pipeline is fully containerized using **Docker** and is built around 
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 | Phase              | Tools                   |
 | :----------------- | :---------------------- |
