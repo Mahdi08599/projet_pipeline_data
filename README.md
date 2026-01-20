@@ -23,7 +23,7 @@ Stockage d'objets : MinIO.
 
 Orchestration : Apache Airflow (Docker-based).
 
-Cloud Data Warehouse : Snowflake.
+Cloud Data Warehouse : Snowflake. 
 
 Infrastructure : Docker & Docker Compose.
 
