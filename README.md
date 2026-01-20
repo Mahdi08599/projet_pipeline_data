@@ -1,51 +1,82 @@
-# 🚀 Production-Grade Data Pipeline: Real-Time Ingestion & Cloud Analytics
+# Real-Time Stock Market Data Pipeline
 
-This repository features a robust, end-to-end data infrastructure designed for high-availability stock market streaming (AAPL). The system transitions from real-time ingestion to a modular "Clean Architecture," ensuring scalability and professional-grade monitoring.
-
----
-
-## 🛠️ Tech Stack & Infrastructure
-
-| Layer | Technology | Role |
-| :--- | :--- | :--- |
-| **Streaming** | Apache Kafka | Real-time message brokerage |
-| **Data Lake** | MinIO (S3 API) | Bronze layer for raw JSON persistence |
-| **Orchestration** | Apache Airflow | Workflow automation & Cloud sync |
-| **Warehouse** | Snowflake | Silver layer for structured analytics |
-| **Environment** | Docker | Containerized microservices |
+### End-to-End Medallion Architecture & Orchestration
 
 ---
 
-## 🏗️ Modular System Architecture
+## Project Description
 
-The project follows a **Separation of Concerns (SoC)** principle, isolating technical drivers from business logic.
-
-```text
-src/
- ├── common/       # Shared Kafka drivers & Centralized Logger
- ├── producers/    # High-frequency ingestion services
- └── consumers/    # Specialized storage & processing workers
-dags/              # Production ETL workflows
-docker-compose.yml # Infrastructure as Code (IaC)
-screenshots/       # System validation proofs
+This project implements a complete real-time data pipeline for stock market analysis. The goal is to transform raw streaming data into actionable performance indicators using a robust **Medallion Architecture** deployed on **Snowflake**.
 
 ---
 
-⚡ Key Engineering Features
-Modular Ingestion: Decoupled Producers and Consumers allowing independent scaling of services.
+## Technical Architecture
 
-Centralized Logging: Standardized monitoring across all Python services for rapid debugging.
+The entire pipeline is fully containerized using **Docker** and is built around the following components:
 
-Automated Cloud Sync: Airflow DAGs manage the secure bridge between local storage and Snowflake.
+* **Ingestion**: Real-time data streams via **Apache Kafka**
+* **Object Storage**: Raw data persistence in **MinIO** (S3-compatible)
+* **Orchestration**: Workflow management with **Apache Airflow**
+* **Data Warehouse**: Distributed storage and computation on **Snowflake**
+* **Transformation**: Data modeling and cleansing with **dbt**
+* **Visualization**: Analytical dashboards built in **Power BI**
 
-Data Integrity: Implements a Bronze-to-Silver transformation flow for analytics readiness.
+---
 
-📊 System Validation
-Pipeline Health
-Real-time monitoring via the Airflow scheduler ensures 100% task completion for Cloud synchronization.
+##  Technology Stack
 
-Warehouse Analytics
-Final data landing in the Snowflake Silver layer, verified and indexed for downstream BI tools.
+| Phase              | Tools                   |
+| :----------------- | :---------------------- |
+| **Ingestion**      | Kafka, MinIO, Airflow   |
+| **Storage**        | Snowflake               |
+| **Transformation** | dbt (Data Build Tool)   |
+| **Visualization**  | Power BI                |
+| **Infrastructure** | Docker & Docker Compose |
 
-👤 Maintainer
-Mahdi Ben Arfi – Business Analyst & Data Scientist
+---
+
+## Medallion Pipeline (dbt)
+
+Data flows through three quality layers within Snowflake:
+
+### 1️⃣ Bronze Layer (Raw)
+
+* **Table**: `AAPL_DATA` (Schema: `SILVER`)
+* **Source**: Raw data ingested directly from MinIO
+
+### 2️⃣ Silver Layer (Cleaned)
+
+* **Models**: `stg_stock_data`, `int_stock_cleansed`
+* **Processing**: Data cleaning, type casting, and deduplication
+
+### 3️⃣ Gold Layer (Analytics)
+
+* **Model**: `fct_stock_performance` (Schema: `GOLD`)
+* **KPI**: Stock price percentage variation:
+
+  $$
+  \text{Price Variation %} =
+  \frac{\text{Current Price} - \text{Previous Price}}
+  {\text{Previous Price}} \times 100
+  $$
+
+---
+
+## Installation & Run
+
+### Prerequisites
+
+* Docker & Docker Compose installed
+* Active Snowflake account
+  (URL: `lxqrhwo-ov83463.snowflakecomputing.com`)
+
+### Steps
+
+1. **Configuration**: Set Snowflake credentials in the `.env` file
+2. **Startup**: Run `docker-compose up -d --build`
+3. **Orchestration**: Enable the DAG `transfert_direct_minio_snowflake` in the Airflow UI (`localhost:8080`)
+4. **Visualization**: Connect Power BI to the table `GOLD.FCT_STOCK_PERFORMANCE`
+
+---
+
+This project demonstrates an end-to-end, production-oriented real-time data pipeline, combining streaming ingestion, modern data warehousing, and analytics-ready transformations.
