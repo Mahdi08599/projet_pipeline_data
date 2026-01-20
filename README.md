@@ -29,6 +29,7 @@ dags/              # Production ETL workflows
 docker-compose.yml # Infrastructure as Code (IaC)
 screenshots/       # System validation proofs
 
+---
 
 ⚡ Key Engineering Features
 Modular Ingestion: Decoupled Producers and Consumers allowing independent scaling of services.
