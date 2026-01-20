@@ -10,13 +10,13 @@ from common.kafka_config import get_consumer
 s3 = boto3.client(
     's3',
     endpoint_url='http://localhost:9000',
-    aws_access_key_id='VOTRE_ACCESS_KEY',
-    aws_secret_access_key='VOTRE_SECRET_KEY'
+    aws_access_key_id='admin',
+    aws_secret_access_key='password'
 )
 
 consumer = get_consumer('stock_prices')
 
-print("📥 Archiver MinIO prêt...")
+print(" Archiver MinIO prêt...")
 
 for message in consumer:
     data = message.value

@@ -3,14 +3,15 @@ import time
 import sys
 import os
 
-# Ajout du chemin src pour l'import
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 from common.kafka_config import get_producer
+from common.logger import get_logger
 
 ticker = "AAPL"
 producer = get_producer()
+logger = get_logger("StockProducer-AAPL")
 
-print(f"🚀 Producer démarré pour {ticker}...")
+logger.info("Démarrage du service d'ingestion...")
 
 try:
     while True:
@@ -21,7 +22,7 @@ try:
             "timestamp": str(data.name)
         }
         producer.send('stock_prices', value=message)
-        print(f"📡 Donnée envoyée : {message}")
+        logger.info(f"Donnée boursière envoyée avec succès : {message['price']} USD")
         time.sleep(60)
 except KeyboardInterrupt:
-    print("Stopping Producer...")
+    logger.info("Arrêt du service demandé par l'utilisateur.")
